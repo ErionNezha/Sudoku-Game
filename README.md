@@ -1,5 +1,7 @@
 # Sudoku Game
 
+Created by **Erion Nezha**.
+
 Play it live: **https://erionnezha.github.io/Sudoku-Game/**
 
 A classic 9×9 Sudoku game. This repo contains two versions of the same game:
