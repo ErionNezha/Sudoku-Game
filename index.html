@@ -1,335 +1,115 @@
-<!DOCTYPE html>
 <!-- Created by Erion Nezha — © 2026 All rights reserved -->
-<html lang="en">
+<!DOCTYPE html>
+<html lang="sq">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LET'S PLAY SUDOKU</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sudoku Game — Erion Nezha</title>
 <style>
-  :root{
-    --royal:#4169e1;
-    --royal-dark:#2b4bc4;
-    --ink:#111;
-    --user:#1a3fb5;
-    --wrong:#d61f1f;
-    --sel:#2e8b57;
-    --hl:#e7f0ff;
-    --cell:#ffffff;
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--royal);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    color:#fff;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:18px 12px 32px;
-    touch-action:manipulation;
-  }
-  h1{
-    margin:6px 0 2px;
-    font-size:clamp(22px,5.5vw,38px);
-    letter-spacing:3px;
-    text-shadow:0 2px 6px rgba(0,0,0,.35);
-    text-align:center;
-  }
-  .subtitle{margin:0 0 14px;font-size:14px;opacity:.9;text-align:center;}
-  #board{
-    display:grid;
-    grid-template-columns:repeat(9,1fr);
-    width:min(92vw,460px);
-    aspect-ratio:1/1;
-    background:var(--royal-dark);
-    border:4px solid var(--royal-dark);
-    border-radius:6px;
-    overflow:hidden;
-    box-shadow:0 8px 28px rgba(0,0,0,.35);
-    user-select:none;
-  }
-  #board.won{box-shadow:0 0 0 5px #35d07f,0 8px 28px rgba(0,0,0,.35);}
-  .cell{
-    background:var(--cell);
-    border:1px solid #c9d4f2;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:clamp(18px,5vw,30px);
-    font-weight:700;
-    color:var(--ink);
-    cursor:pointer;
-    position:relative;
-  }
-  .cell.given{color:#0a0a0a;background:#f4f6ff;}
-  .cell.input{color:var(--user);}
-  .cell.wrong{color:var(--wrong);}
-  .cell.hl{background:var(--hl);}
-  .cell.given.hl{background:#dde6fb;}
-  .cell.sel{background:#d9f2e3 !important;box-shadow:inset 0 0 0 3px var(--sel);}
-  .cell.missing{box-shadow:inset 0 0 0 2px dashed var(--wrong);}
-  /* thick 3x3 box borders */
-  .cell.br{border-right:3px solid var(--royal-dark);}
-  .cell.bb{border-bottom:3px solid var(--royal-dark);}
-  #msg{
-    min-height:28px;
-    margin:12px 0 4px;
-    font-size:17px;
-    font-weight:600;
-    text-align:center;
-    text-shadow:0 1px 3px rgba(0,0,0,.3);
-  }
-  #msg.ok{color:#b8ffcf;}
-  #msg.err{color:#ffd7d7;}
-  .controls{display:flex;gap:10px;margin:10px 0 4px;flex-wrap:wrap;justify-content:center;}
-  .btn{
-    border:none;border-radius:8px;cursor:pointer;
-    padding:11px 22px;font-size:16px;font-weight:700;
-    background:#fff;color:var(--royal-dark);
-    box-shadow:0 3px 0 rgba(0,0,0,.25);
-    transition:transform .06s ease, box-shadow .06s ease;
-  }
-  .btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25);}
-  .btn.primary{background:#0fbf6a;color:#fff;}
-  #pad{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-    width:min(92vw,460px);
-    margin-top:14px;
-  }
-  #pad button{
-    border:none;border-radius:8px;cursor:pointer;
-    padding:13px 0;font-size:20px;font-weight:700;
-    background:rgba(255,255,255,.92);color:var(--royal-dark);
-    box-shadow:0 3px 0 rgba(0,0,0,.25);
-  }
-  #pad button:active{transform:translateY(2px);box-shadow:none;background:#fff;}
-  #pad button.erase{grid-column:span 1;background:#ffe1e1;color:#a00;}
-  .hint{margin-top:12px;font-size:13px;opacity:.85;text-align:center;max-width:460px;line-height:1.5;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0e14;color:#e6e6e6;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header.top{background:linear-gradient(135deg,#0d1b2a,#1b263b);padding:28px 20px;text-align:center;border-bottom:2px solid #00d4ff33}
+header.top h1{font-size:1.7rem;color:#fff;margin-bottom:8px}
+header.top p{color:#9fb3c8;max-width:760px;margin:0 auto 12px;line-height:1.55;font-size:.95rem}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.badge{background:#00d4ff22;border:1px solid #00d4ff66;color:#7fdbff;padding:4px 12px;border-radius:20px;font-size:.78rem}
+.tabs{display:flex;gap:10px;justify-content:center;padding:16px;background:#0d1420;border-bottom:1px solid #ffffff14}
+.tabs button{background:#1b263b;color:#cfd8e3;border:1px solid #ffffff22;padding:10px 22px;border-radius:8px;cursor:pointer;font-size:.92rem;transition:.2s}
+.tabs button.active,.tabs button:hover{background:#00d4ff;color:#04121a;border-color:#00d4ff;font-weight:600}
+main{flex:1;padding:20px;max-width:1200px;width:100%;margin:0 auto}
+.panel{display:none}
+.panel.active{display:block}
+iframe.demo{width:100%;height:78vh;border:1px solid #ffffff22;border-radius:10px;background:#fff}
+.codewrap{display:flex;gap:0;border:1px solid #ffffff22;border-radius:10px;overflow:hidden;height:78vh;background:#0d1117}
+.tree{width:250px;min-width:200px;background:#0d1420;border-right:1px solid #ffffff14;overflow-y:auto;padding:12px;font-size:.82rem}
+.tree .tfile{padding:5px 8px;border-radius:5px;cursor:pointer;color:#9fb3c8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tree .tfile:hover{background:#ffffff10;color:#fff}
+.tree .tfile.active{background:#00d4ff26;color:#7fdbff}
+.tree .tdir{color:#5c6b7f;font-weight:600;margin-top:8px;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+.codeview{flex:1;overflow:auto;padding:0;position:relative}
+.codeview pre{padding:16px;font-family:'Consolas','Fira Code',monospace;font-size:.82rem;line-height:1.6;color:#d6deeb;white-space:pre}
+.codeview .lineno{color:#4a5568;user-select:none;margin-right:12px;display:inline-block;width:32px;text-align:right}
+.codeview img.preview{max-width:100%;padding:20px}
+.cbar{display:flex;gap:8px;align-items:center;padding:10px 14px;background:#0d1420;border-bottom:1px solid #ffffff14;font-size:.82rem;color:#9fb3c8;overflow-x:auto}
+.ctab{padding:6px 14px;border-radius:6px;cursor:pointer;white-space:nowrap;border:1px solid transparent}
+.ctab:hover{background:#ffffff10}
+.ctab.active{background:#00d4ff26;color:#7fdbff;border-color:#00d4ff55}
+footer{text-align:center;padding:18px;color:#5c6b7f;font-size:.85rem;border-top:1px solid #ffffff10;margin-top:10px}
+footer strong{color:#9fb3c8}
+.term{background:#05070a;border:1px solid #00ff8833;border-radius:10px;overflow:hidden;height:78vh;display:flex;flex-direction:column}
+.term-head{background:#0d1420;padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ffffff14}
+.dot{width:12px;height:12px;border-radius:50%}
+.term-title{color:#9fb3c8;font-size:.82rem;margin-left:6px;flex:1}
+.replay{background:#00ff8822;border:1px solid #00ff8866;color:#7dffb0;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:.8rem}
+.replay:hover{background:#00ff8844}
+#term-body{flex:1;overflow-y:auto;padding:16px;font-family:'Consolas',monospace;font-size:.88rem;line-height:1.7;color:#33ff88;white-space:pre-wrap;word-break:break-word}
+#term-body .inp{color:#ffd75c}
+#term-body .dim{color:#4a6b57}
+.cursor{display:inline-block;width:9px;height:17px;background:#33ff88;vertical-align:-3px;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:0}}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.split .term,.split .codewrap{height:78vh}
+@media(max-width:860px){.split{grid-template-columns:1fr}.codewrap{flex-direction:column}.tree{width:100%;max-height:150px;border-right:none;border-bottom:1px solid #ffffff14}}
+.kw{color:#ff7edb}.st{color:#ffd75c}.cm{color:#5c6b7f;font-style:italic}.fn{color:#7fdbff}.nm{color:#f78c6c}
+.note{background:#00d4ff12;border:1px solid #00d4ff44;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:.86rem;color:#9fb3c8;line-height:1.6}
 </style>
 </head>
 <body>
-  <h1>LET'S PLAY SUDOKU</h1>
-  <p class="subtitle">Web port of the Python (turtle + tkinter) original</p>
-
-  <div id="board" role="grid" aria-label="Sudoku board"></div>
-  <div id="msg" aria-live="polite"></div>
-
-  <div class="controls">
-    <button class="btn primary" id="btn-new" type="button">New Game</button>
-    <button class="btn" id="btn-check" type="button">Check</button>
-    <button class="btn" id="btn-reset" type="button">Reset</button>
-  </div>
-
-  <div id="pad" aria-label="Number pad"></div>
-
-  <p class="hint">Click / tap a cell, then type 1&ndash;9 or use the pad below.
-  Backspace erases. Arrow keys move the selection. Enter checks the board.</p>
-
+<header class="top">
+<h1>🚀 Sudoku Game</h1>
+<p>Created by **Erion Nezha**.</p>
+<div class="badges"><span class="badge">HTML</span><span class="badge">Python</span></div>
+</header>
+<div class="tabs">
+<button class="active" onclick="show('demo',this)">🖥️ Live Demo</button>
+<button onclick="show('code',this)">📝 Kodi Burim</button>
+</div>
+<main>
+<div class="note">💡 Demo-ja live ekzekutohet direkt në browser. Kliko <strong>Kodi Burim</strong> për të parë kodin e plotë të projektit.</div>
+<div id="p-demo" class="panel active"><iframe class="demo" src="demo/index.html" title="Live demo"></iframe></div>
+<div id="p-code" class="panel"><div class="codewrap">
+<aside class="tree" id="tree"></aside>
+<div class="codeview"><div class="cbar" id="cbar"></div><div id="codebox"><pre></pre></div></div>
+</div></div>
+</main>
+<footer>Krijuar nga <strong>Erion Nezha</strong> — © 2026</footer>
 <script>
-"use strict";
-// 3 enigma të paracaktuara, të verifikuara me backtracking solver (zgjidhje unike).
-const PUZZLES = [
-  { puzzle: [5,8,1,0,7,0,0,0,0,0,9,0,8,0,0,6,5,0,0,0,0,5,0,1,0,8,0,0,3,0,9,0,7,0,1,0,2,5,6,1,0,0,0,0,0,1,0,0,0,0,6,0,4,0,8,4,0,2,0,9,0,6,0,9,0,0,0,0,0,5,2,0,6,0,0,0,3,0,0,9,0],
-    solution: [5,8,1,6,7,2,4,3,9,7,9,2,8,4,3,6,5,1,3,6,4,5,9,1,7,8,2,4,3,8,9,5,7,2,1,6,2,5,6,1,8,4,9,7,3,1,7,9,3,2,6,8,4,5,8,4,5,2,1,9,3,6,7,9,1,3,7,6,8,5,2,4,6,2,7,4,3,5,1,9,8] },
-  { puzzle: [0,0,0,0,0,0,7,0,0,6,0,0,5,0,0,0,9,3,0,9,0,8,3,0,5,0,0,0,2,6,0,0,5,3,4,7,3,0,4,6,8,2,0,1,0,0,0,0,0,0,0,0,2,8,0,1,9,0,2,0,0,0,0,0,0,8,0,5,0,0,3,6,7,0,0,4,0,0,2,0,0],
-    solution: [4,3,5,2,6,9,7,8,1,6,8,2,5,7,1,4,9,3,1,9,7,8,3,4,5,6,2,8,2,6,1,9,5,3,4,7,3,7,4,6,8,2,9,1,5,9,5,1,7,4,3,6,2,8,5,1,9,3,2,6,8,7,4,2,4,8,9,5,7,1,3,6,7,6,3,4,1,8,2,5,9] },
-  { puzzle: [0,0,0,0,0,9,3,7,6,7,0,0,0,5,0,0,0,0,0,0,0,3,7,1,2,9,5,0,8,7,1,2,0,0,0,0,0,9,1,0,0,3,0,0,8,0,4,0,0,0,0,7,0,0,0,0,4,0,3,0,5,0,2,6,0,5,9,0,8,0,3,0,0,0,0,0,0,0,0,6,4],
-    solution: [1,5,2,4,8,9,3,7,6,7,3,9,2,5,6,8,4,1,4,6,8,3,7,1,2,9,5,3,8,7,1,2,4,6,5,9,5,9,1,7,6,3,4,2,8,2,4,6,8,9,5,7,1,3,9,1,4,6,3,7,5,8,2,6,2,5,9,4,8,1,3,7,8,7,3,5,1,2,9,6,4] },
-];
-
-const boardEl = document.getElementById('board');
-const msgEl = document.getElementById('msg');
-const padEl = document.getElementById('pad');
-
-let puzzleIdx = -1;
-let givens = new Array(81).fill(false);
-let solution = new Array(81).fill(0);
-let values = new Array(81).fill(0);
-let selected = -1;
-let won = false;
-
-function rowOf(i){ return Math.floor(i/9); }
-function colOf(i){ return i%9; }
-function boxOf(i){ return Math.floor(rowOf(i)/3)*3 + Math.floor(colOf(i)/3); }
-function sameUnit(a,b){
-  return rowOf(a)===rowOf(b) || colOf(a)===colOf(b) || boxOf(a)===boxOf(b);
+const TREE={"dirs": [], "files": ["index.html", "screenshot.png", "sudoku.py"]};
+const CODEDIR="demo";
+const IMG=/\.(png|jpe?g|gif|svg|webp|ico|bmp)$/i;
+function show(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById('p-'+id).classList.add('active');document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function buildTree(){
+  const t=document.getElementById('tree');let html='';
+  const walk=(node,prefix)=>{node.dirs.forEach(d=>{html+='<div class="tdir">📁 '+prefix+d.name+'</div>';walk(d,prefix+d.name+'/');});node.files.forEach(f=>{html+='<div class="tfile" data-p="'+prefix+f+'">📄 '+f+'</div>';});};
+  walk(TREE,'');t.innerHTML=html;
+  t.querySelectorAll('.tfile').forEach(el=>el.onclick=()=>openFile(el.dataset.p,el));
+  const first=t.querySelector('.tfile');if(first)openFile(first.dataset.p,first);
+}
+async function openFile(path,el){
+  document.querySelectorAll('.tfile').forEach(e=>e.classList.remove('active'));el.classList.add('active');
+  document.getElementById('cbar').textContent=path;
+  const box=document.getElementById('codebox');
+  if(IMG.test(path)){box.innerHTML='<img class="preview" src="'+CODEDIR+'/'+path+'">';return;}
+  try{const r=await fetch(CODEDIR+'/'+path);const txt=await r.text();
+    box.innerHTML='<pre>'+hl(txt,path.split('.').pop())+'</pre>';
+  }catch(e){box.innerHTML='<pre>Deshtoi leximi i file-it.</pre>';}
 }
 
-function setMsg(text, cls){
-  msgEl.textContent = text;
-  msgEl.className = cls || '';
-}
-
-function buildBoard(){
-  boardEl.innerHTML = '';
-  for(let i=0;i<81;i++){
-    const d = document.createElement('div');
-    d.className = 'cell';
-    d.setAttribute('role','gridcell');
-    d.dataset.i = i;
-    if(colOf(i)===2 || colOf(i)===5) d.classList.add('br');
-    if(rowOf(i)===2 || rowOf(i)===5) d.classList.add('bb');
-    d.addEventListener('click', ()=>select(i));
-    boardEl.appendChild(d);
+function hl(code,lang){
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const tok=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/|#[^\n]*|<!--[\s\S]*?-->)|("[^"\n]*"|'[^'\n]*')|\b(import|from|as|def|return|if|elif|else|for|while|in|not|and|or|class|try|except|finally|with|lambda|pass|break|continue|print|public|private|protected|static|void|int|float|double|char|long|short|boolean|new|this|null|true|false|extends|implements|package|throws|struct|include|switch|case|default|do|sizeof|typedef|const|unsigned|using|namespace|cin|cout|endl|int main|string|System|out|println|var|let|function|=>)\b|\b(\d+(\.\d+)?)\b/g;
+  let out='',last=0,m;
+  while((m=tok.exec(code))!==null){
+    out+=esc(code.slice(last,m.index));
+    const cls=m[1]?'cm':m[2]?'st':m[3]?'kw':'nm';
+    out+='<span class="'+cls+'">'+esc(m[0])+'</span>';
+    last=m.index+m[0].length;
   }
+  out+=esc(code.slice(last));
+  return out.split('\n').map((l,i)=>'<span class="lineno">'+(i+1)+'</span>'+(l||' ')).join('\n');
 }
 
-function render(){
-  const cells = boardEl.children;
-  for(let i=0;i<81;i++){
-    const c = cells[i];
-    c.classList.remove('given','input','wrong','hl','sel','missing');
-    if(givens[i]) c.classList.add('given');
-    else if(values[i]!==0){
-      c.classList.add('input');
-      if(values[i]!==solution[i]) c.classList.add('wrong');
-    }
-    if(selected>=0 && selected!==i && sameUnit(selected,i)) c.classList.add('hl');
-    if(i===selected) c.classList.add('sel');
-    c.textContent = values[i]===0 ? '' : values[i];
-  }
-  boardEl.classList.toggle('won', won);
-}
-
-function select(i){
-  selected = i;
-  render();
-}
-
-function ensureSelection(){
-  if(selected<0){
-    for(let i=0;i<81;i++){
-      if(!givens[i] && values[i]===0){ selected=i; break; }
-    }
-  }
-}
-
-function inputNumber(n){
-  if(won) return;
-  ensureSelection();
-  if(selected<0 || givens[selected]) return;
-  values[selected] = n;
-  setMsg('', '');
-  render();
-  if(isComplete()){
-    if(isCorrect()) win();
-  }
-}
-
-function erase(){
-  if(won) return;
-  if(selected>=0 && !givens[selected] && values[selected]!==0){
-    values[selected]=0;
-    setMsg('', '');
-    render();
-  }
-}
-
-function isComplete(){
-  for(let i=0;i<81;i++) if(values[i]===0) return false;
-  return true;
-}
-
-function isCorrect(){
-  for(let i=0;i<81;i++) if(values[i]!==solution[i]) return false;
-  return true;
-}
-
-function win(){
-  won = true;
-  setMsg("🎉 Congratulations! You solved the Sudoku!", 'ok');
-  render();
-}
-
-function checkBoard(){
-  if(won) return;
-  const cells = boardEl.children;
-  let wrong = 0, empty = 0;
-  for(let i=0;i<81;i++){
-    cells[i].classList.remove('missing');
-    if(values[i]===0) empty++;
-    else if(values[i]!==solution[i]) wrong++;
-  }
-  if(wrong===0 && empty===0){ win(); return; }
-  for(let i=0;i<81;i++){
-    if(values[i]===0) cells[i].classList.add('missing');
-  }
-  render();
-  // ri-shëno missing pas render (render pastron klasat)
-  for(let i=0;i<81;i++){
-    if(values[i]===0) boardEl.children[i].classList.add('missing');
-  }
-  if(wrong>0 && empty>0) setMsg(wrong+" wrong, "+empty+" empty — keep going!", 'err');
-  else if(wrong>0) setMsg(wrong+" wrong — check the red cells.", 'err');
-  else setMsg(empty+" empty cells — almost there!", 'err');
-}
-
-function resetBoard(){
-  for(let i=0;i<81;i++) values[i] = givens[i] ? solution[i] : 0;
-  selected = -1;
-  won = false;
-  setMsg('', '');
-  render();
-}
-
-function newGame(){
-  let next;
-  do { next = Math.floor(Math.random()*PUZZLES.length); }
-  while(next===puzzleIdx && PUZZLES.length>1);
-  puzzleIdx = next;
-  const p = PUZZLES[puzzleIdx];
-  solution = p.solution.slice();
-  for(let i=0;i<81;i++){
-    givens[i] = p.puzzle[i]!==0;
-    values[i] = p.puzzle[i];
-  }
-  selected = -1;
-  won = false;
-  setMsg('Puzzle '+(puzzleIdx+1)+' of '+PUZZLES.length+' — good luck!', '');
-  render();
-}
-
-function moveSelection(dr,dc){
-  if(selected<0){ select(40); return; }
-  let r = rowOf(selected)+dr, c = colOf(selected)+dc;
-  if(r<0) r=0; if(r>8) r=8; if(c<0) c=0; if(c>8) c=8;
-  select(r*9+c);
-}
-
-function buildPad(){
-  padEl.innerHTML = '';
-  for(let n=1;n<=9;n++){
-    const b = document.createElement('button');
-    b.type='button'; b.textContent=n;
-    b.addEventListener('click', ()=>inputNumber(n));
-    padEl.appendChild(b);
-  }
-  const e = document.createElement('button');
-  e.type='button'; e.textContent='DEL'; e.className='erase'; e.title='Erase';
-  e.addEventListener('click', erase);
-  padEl.appendChild(e);
-}
-
-document.getElementById('btn-new').addEventListener('click', newGame);
-document.getElementById('btn-check').addEventListener('click', checkBoard);
-document.getElementById('btn-reset').addEventListener('click', resetBoard);
-
-document.addEventListener('keydown', (ev)=>{
-  if(ev.key>='1' && ev.key<='9'){ inputNumber(parseInt(ev.key,10)); }
-  else if(ev.key==='Backspace' || ev.key==='Delete'){ erase(); ev.preventDefault(); }
-  else if(ev.key==='ArrowUp'){ moveSelection(-1,0); ev.preventDefault(); }
-  else if(ev.key==='ArrowDown'){ moveSelection(1,0); ev.preventDefault(); }
-  else if(ev.key==='ArrowLeft'){ moveSelection(0,-1); ev.preventDefault(); }
-  else if(ev.key==='ArrowRight'){ moveSelection(0,1); ev.preventDefault(); }
-  else if(ev.key==='Enter'){ checkBoard(); }
-});
-
-buildBoard();
-buildPad();
-newGame();
+buildTree();
 </script>
 </body>
 </html>
